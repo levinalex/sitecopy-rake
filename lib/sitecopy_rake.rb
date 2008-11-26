@@ -1,4 +1,8 @@
-#/usr/bin/ruby
+#!/usr/bin/env ruby
+#
+# (c) 2006-2008, Levin Alexander <http://levinalex.net>
+#
+# This library is released under the same license as ruby itself.
 #
 module Rake #:nodoc:
 
@@ -7,9 +11,11 @@ module Rake #:nodoc:
   # it uses sitecopy to keep a local directory syncronized with
   # a FTP or webDAV server
   #
-  # usage:
-  #   rcfile = <<<-EOF
-  #     server ftpexample.com
+  # Example usage
+  # -------------
+  #
+  #   rcfile = <<-EOF
+  #     server ftp.example.com
   #     username example
   #     password 12345
   #     ...
@@ -19,7 +25,7 @@ module Rake #:nodoc:
   # it generates rake tasks to download, upload or check the
   # contents on the remote server
   #
-  # see `rake --tasks` for the generated rules
+  # see `rake --tasks` for information the generated rules
   #
   class SitecopyTask
 
@@ -108,4 +114,3 @@ module Rake #:nodoc:
     end
   end
 end
-
