@@ -69,48 +69,50 @@ module Rake #:nodoc:
     end
 
     def define
-      # Create sitecopy .rcfile
-      file @rcfile do
-        File.open(@rcfile,"w+", 0600) { |f| f.write(@rc) }
-      end
+      namespace :sitecopy do
 
-      # Create sitecopy storage directory
-      file @state_dir do
-        Dir.mkdir(@state_dir, 0700)
-        fetch # check state on server
-      end
+        # Create sitecopy .rcfile
+        task @rcfile do
+          File.open(@rcfile,"w+", 0600) { |f| f.write(@rc) }
+        end
 
-      # Remove sitecopy configfile and state cache
-      task :clobber_sitecopy do
-        rm_r @state_dir rescue nil
-        rm @rcfile rescue nil
-      end
+        # Create sitecopy storage directory
+        file @state_dir do
+          Dir.mkdir(@state_dir, 0700)
+          fetch # check state on server
+        end
 
-      task :prepare_sitecopy => [@rcfile, @state_dir]
+        # Remove sitecopy configfile and state cache
+        desc "Clean temporary files"
+        task :clobber do
+          rm_r @state_dir rescue nil
+          rm @rcfile rescue nil
+        end
 
-      desc "Resyncronize sitecopy state with remote server"
-      task :check_server => [:clobber_sitecopy, :prepare_sitecopy] do
-        list
-      end
-      desc "List changes between local directory and remote server"
-      task :list => [:prepare_sitecopy] do
-        list
-      end
+        task :prepare => [@rcfile, @state_dir]
 
-      task "upload_#{@site}" => [:prepare_sitecopy] do
-        upload
-      end
-      desc "Upload all sites to remote server"
-      task :upload => ["upload_#{@site}"]
+        desc "Resyncronize sitecopy state with remote server"
+        task :check_server => [:clobber, :prepare] do
+          list
+        end
+        desc "List changes between local directory and remote server"
+        task :list => [:prepare] do
+          list
+        end
 
-      task "download_#{@site}" => [:prepare_sitecopy] do
-        download
-      end
-      desc "Download all sites from remote server"
-      task :download => ["download_#{@site}"]
+        task "upload_#{@site}" => [:prepare] do
+          upload
+        end
+        desc "Upload all sites to remote server"
+        task :upload => ["upload_#{@site}"]
 
-      desc "Clean temporary files"
-      task :clobber => [:clobber_sitecopy]
+        task "download_#{@site}" => [:prepare] do
+          download
+        end
+        desc "Download all sites from remote server"
+        task :download => ["download_#{@site}"]
+
+      end
     end
   end
 end
