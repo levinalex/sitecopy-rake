@@ -1,0 +1,18 @@
+require '../../lib/sitecopy_rake.rb'
+
+Rake::SitecopyTask.new("example", <<-SITECOPYRC)
+  server localhost
+  port 8765
+  username anonymous
+  password foo@bar.example
+  local local_site
+  remote /html
+
+  safe
+  state checksum
+  exclude .excluded_dir
+  exclude /pages
+  ignore /admin
+  ignore /.htaccess
+  exclude /.htaccess
+SITECOPYRC
